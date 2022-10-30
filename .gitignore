@@ -1,0 +1,8 @@
+lib/bs
+.vscode
+.merlin
+.bsb.lock
+/node_modules/
+/build/
+/lib/
+*.bs.js

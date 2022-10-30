@@ -1,0 +1,15 @@
+{
+  "name": "ahrefs-country-selector",
+  "version": "0.1.0",
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  },
+  "reason": { "react-jsx": 3 },
+  "bs-dependencies": ["@rescript/react"]
+}
