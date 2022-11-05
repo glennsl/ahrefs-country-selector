@@ -1,3 +1,4 @@
+open Core
 open Ffi
 
 module CountrySelect = {
@@ -41,7 +42,7 @@ module CountrySelect = {
   let make = () => {
     let (countries, setCountries) = React.useState(() => [])
     let (isOpen, setOpen) = React.useState(() => false)
-    let ref = React.useRef(Js.Nullable.null)
+    let ref = React.useRef(null)
 
     let toggle = _ => setOpen(isOpen => !isOpen)
     let close = () => setOpen(_ => false)
@@ -66,7 +67,7 @@ module CountrySelect = {
 
         let onClick = event => maybeClose(close, event)
 
-        Js.Global.setTimeout(() => Document.addEventListener("click", onClick), 0)->ignore
+        setTimeout(() => Document.addEventListener("click", onClick), 0)->ignore
         Some(() => Document.removeEventListener("click", onClick))
       } else {
         None
@@ -78,7 +79,7 @@ module CountrySelect = {
       <div ref={ReactDOM.Ref.domRef(ref)} className={`dropdown ${isOpen ? "open" : ""}`}>
         <ul>
           {countries
-          ->Js.Array2.map(country => <li key=country.value> {country.label->React.string} </li>)
+          ->Array.map(country => <li key=country.value> {country.label->React.string} </li>)
           ->React.array}
         </ul>
       </div>
