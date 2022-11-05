@@ -1,5 +1,6 @@
 open Core
 open Ffi
+open Model
 
 module CountrySelect = {
   let css = Emotion.css(`
@@ -15,11 +16,6 @@ module CountrySelect = {
       }
     }
   `)
-
-  type country = {
-    label: string,
-    value: string,
-  }
 
   let getCountries = (): Promise.t<result<array<country>, string>> => {
     Fetch.get(
