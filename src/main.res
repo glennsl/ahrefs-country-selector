@@ -23,10 +23,7 @@ module CountrySelect = {
     )
     ->Promise.flatMap(response =>
       if response->Fetch.Response.ok {
-        response
-        ->Fetch.Response.json
-        ->Promise.map((Obj.magic: Js.Json.t => array<country>))
-        ->Promise.map(json => Ok(json))
+        response->Fetch.Response.json->Promise.map(Json.validate(_, Validate.countries))
       } else {
         Error(response->Fetch.Response.statusText)->Promise.resolve
       }
