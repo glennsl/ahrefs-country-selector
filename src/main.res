@@ -72,7 +72,12 @@ module CountrySelect = {
       <div ref={ReactDOM.Ref.domRef(ref)} className={`dropdown ${isOpen ? "open" : ""}`}>
         <ul>
           {countries
-          ->Array.map(country => <li key=country.value> {country.label->React.string} </li>)
+          ->Array.map(country =>
+            <li key=country.value>
+              <FlagIcon lang=country.value />
+              {country.label->React.string}
+            </li>
+          )
           ->React.array}
         </ul>
       </div>
