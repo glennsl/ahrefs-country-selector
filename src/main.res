@@ -6,6 +6,7 @@ module App = {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #ebebee;
   `)
 
   @react.component
