@@ -30,8 +30,10 @@ let css = Emotion.css(`
     position: absolute;
     top: calc(100% + .5ex);
 
+    display: flex;
+    flex-direction: column;
+
     max-height: 15em;
-    overflow: auto;
 
     background: #FFF;
     border: 1px solid rgba(0, 0, 0, 0.08);
@@ -50,6 +52,7 @@ let css = Emotion.css(`
       box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.08);
 
       & > img {
+        width: 1em;
         padding: 0 2px;
       }
 
@@ -75,6 +78,7 @@ let css = Emotion.css(`
     & > ul {
       margin: 0;
       padding: 0;
+      overflow: auto;
 
       & > li {
         display: flex;
