@@ -11,7 +11,9 @@ module App = {
   @react.component
   let make = () =>
     <main className=css>
-      <CountrySelect country=Some("us") onChange={country => Js.log(country)} />
+      <CountrySelect
+        className="custom-class" country=Some("us") onChange={country => Js.log(country)}
+      />
     </main>
 }
 

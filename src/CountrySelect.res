@@ -77,7 +77,7 @@ let getCountries = (): Promise.t<result<array<country>, string>> => {
 }
 
 @react.component
-let make = (~country as selectedValue, ~onChange) => {
+let make = (~className="", ~country as selectedValue, ~onChange) => {
   let (countries, setCountries) = React.useState(() => [])
   let (isOpen, setOpen) = React.useState(() => false)
   let ref = React.useRef(null)
@@ -115,7 +115,7 @@ let make = (~country as selectedValue, ~onChange) => {
     }
   }, [isOpen])
 
-  <div className=css>
+  <div className={`${css} ${className}`}>
     <button onClick=toggle>
       {selectedCountry
       ->Option.mapWithDefault("Select country", country => country.label)
