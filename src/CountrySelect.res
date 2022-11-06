@@ -42,6 +42,36 @@ let css = Emotion.css(`
       display: none;
     }
 
+    & > .search {
+      display: flex;
+      gap: 1ex;
+      padding: .75ex 1ex;
+
+      box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.08);
+
+      & > img {
+        padding: 0 2px;
+      }
+
+      & > input {
+        flex: 1;
+        border: none;
+
+        font-family: 'Roboto';
+        font-size: 14px;
+        line-height: 18px;
+        color: #333;
+
+        &::placeholder {
+          color: #ADADAD;
+        }
+
+        &:focus-visible {
+          outline: none;
+        }
+      }
+    }
+
     & > ul {
       margin: 0;
       padding: 0;
@@ -51,7 +81,7 @@ let css = Emotion.css(`
         gap: 1ex;
 
         white-space: nowrap;
-        padding: .65ex 1ex;
+        padding: .75ex 1ex;
         cursor: pointer;
 
         &:hover {
@@ -80,10 +110,17 @@ let getCountries = (): Promise.t<result<array<country>, string>> => {
 let make = (~className="", ~country as selectedValue, ~onChange) => {
   let (countries, setCountries) = React.useState(() => [])
   let (isOpen, setOpen) = React.useState(() => false)
+  let (filter, setFilter) = React.useState(() => "")
   let ref = React.useRef(null)
 
   let selectedCountry =
     selectedValue->Option.flatMap(value => countries->Array.find(country => country.value == value))
+
+  let filteredCountries = if filter == "" {
+    countries
+  } else {
+    countries->Array.filter(country => country.label->String.toLowerCase->String.includes(filter))
+  }
 
   let toggle = _ => setOpen(isOpen => !isOpen)
   let close = () => setOpen(_ => false)
@@ -123,8 +160,17 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
       {Icon.arrow}
     </button>
     <div ref={ReactDOM.Ref.domRef(ref)} className={`dropdown ${isOpen ? "open" : ""}`}>
+      <div className="search">
+        {Icon.search}
+        <input
+          type_="text"
+          placeholder="Search"
+          onInput={event => setFilter(_ => (event->ReactEvent.Form.target)["value"])}
+          value=filter
+        />
+      </div>
       <ul>
-        {countries
+        {filteredCountries
         ->Array.map(country =>
           <li key=country.value onClick={_ => onChange(country)}>
             <FlagIcon lang=country.value />
