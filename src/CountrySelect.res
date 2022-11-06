@@ -77,10 +77,13 @@ let getCountries = (): Promise.t<result<array<country>, string>> => {
 }
 
 @react.component
-let make = () => {
+let make = (~country as selectedValue, ~onChange) => {
   let (countries, setCountries) = React.useState(() => [])
   let (isOpen, setOpen) = React.useState(() => false)
   let ref = React.useRef(null)
+
+  let selectedCountry =
+    selectedValue->Option.flatMap(value => countries->Array.find(country => country.value == value))
 
   let toggle = _ => setOpen(isOpen => !isOpen)
   let close = () => setOpen(_ => false)
@@ -114,14 +117,16 @@ let make = () => {
 
   <div className=css>
     <button onClick=toggle>
-      {"Click me!"->React.string}
+      {selectedCountry
+      ->Option.mapWithDefault("Select country", country => country.label)
+      ->React.string}
       {Icon.arrow}
     </button>
     <div ref={ReactDOM.Ref.domRef(ref)} className={`dropdown ${isOpen ? "open" : ""}`}>
       <ul>
         {countries
         ->Array.map(country =>
-          <li key=country.value>
+          <li key=country.value onClick={_ => onChange(country)}>
             <FlagIcon lang=country.value />
             {country.label->React.string}
           </li>

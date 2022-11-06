@@ -11,7 +11,7 @@ module App = {
   @react.component
   let make = () =>
     <main className=css>
-      <CountrySelect />
+      <CountrySelect country=Some("us") onChange={country => Js.log(country)} />
     </main>
 }
 
