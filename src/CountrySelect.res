@@ -34,15 +34,12 @@ let css = Emotion.css(`
     flex-direction: column;
 
     max-height: 15em;
+    width: 20em;
 
     background: #FFF;
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
     border-radius: 2px;
-
-    &:not(.open) {
-      display: none;
-    }
 
     & > .search {
       display: flex;
@@ -75,18 +72,23 @@ let css = Emotion.css(`
       }
     }
 
-    & > ul {
+    & > .list {
       margin: 0;
       padding: 0;
       overflow: auto;
 
-      & > li {
+      & > .list-item {
         display: flex;
         gap: 1ex;
 
         white-space: nowrap;
         padding: .75ex 1ex;
         cursor: pointer;
+
+        & > .label {
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
 
         &:hover {
           background: whitesmoke;
@@ -163,26 +165,27 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
       ->React.string}
       {Icon.arrow}
     </button>
-    <div ref={ReactDOM.Ref.domRef(ref)} className={`dropdown ${isOpen ? "open" : ""}`}>
-      <div className="search">
-        {Icon.search}
-        <input
-          type_="text"
-          placeholder="Search"
-          onInput={event => setFilter(_ => (event->ReactEvent.Form.target)["value"])}
-          value=filter
-        />
+    {if isOpen {
+      <div ref={ReactDOM.Ref.domRef(ref)} className="dropdown">
+        <div className="search">
+          {Icon.search}
+          <input
+            type_="text"
+            placeholder="Search"
+            onInput={event => setFilter(_ => (event->ReactEvent.Form.target)["value"])}
+            value=filter
+          />
+        </div>
+        <VirtualizedList className="list" itemHeight=29 items=filteredCountries>
+          ...{country =>
+            <div className="list-item" key=country.value onClick={_ => onChange(country)}>
+              <FlagIcon lang=country.value />
+              <span className="label"> {country.label->React.string} </span>
+            </div>}
+        </VirtualizedList>
       </div>
-      <ul>
-        {filteredCountries
-        ->Array.map(country =>
-          <li key=country.value onClick={_ => onChange(country)}>
-            <FlagIcon lang=country.value />
-            {country.label->React.string}
-          </li>
-        )
-        ->React.array}
-      </ul>
-    </div>
+    } else {
+      React.null
+    }}
   </div>
 }
