@@ -176,7 +176,7 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
             value=filter
           />
         </div>
-        <VirtualizedList className="list" itemHeight=29 items=filteredCountries>
+        <VirtualizedList className="list" items=filteredCountries>
           ...{country =>
             <div className="list-item" key=country.value onClick={_ => onChange(country)}>
               <FlagIcon lang=country.value />

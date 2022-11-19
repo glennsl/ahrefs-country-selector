@@ -2,16 +2,29 @@ open Core
 open Ffi
 
 @react.component
-let make = (~className="", ~itemHeight, ~items, ~children as render) => {
+let make = (~className="", ~items, ~children as render) => {
   let (maybeContainerHeight, setContainerHeight) = React.useState(() => None)
   let (scrollTop, setScrollTop) = React.useState(() => 0)
+  let (itemHeight, setItemHeight) = React.useState(() => 10)
   let containerRef = React.useRef(null)
+
+  let numberToRender = switch maybeContainerHeight {
+  | Some(height) => height / itemHeight + 2
+  | None => 10
+  }
 
   React.useEffect1(() =>
     containerRef.current
     ->Nullable.toOption
     ->Option.map(el => {
       setContainerHeight(_ => Some(el->Element.clientHeight))
+      setItemHeight(
+        currentItemHeight => {
+          let numberNotRendered = items->Array.length - numberToRender
+          let renderedHeight = el->Element.scrollHeight - numberNotRendered * currentItemHeight
+          renderedHeight / numberToRender
+        },
+      )
 
       let onScroll = () => setScrollTop(_ => el->Element.scrollTop)
       el->Element.addEventListener("scroll", onScroll)
@@ -20,10 +33,6 @@ let make = (~className="", ~itemHeight, ~items, ~children as render) => {
     })
   , [containerRef])
 
-  let numberToRender = switch maybeContainerHeight {
-  | Some(height) => height / itemHeight + 2
-  | None => 10
-  }
   let startIndex = Js.Math.max_int(scrollTop / itemHeight - 1, 0)
   let indicesToRender = Belt.Array.init(numberToRender, i => i + startIndex)
   let remaining = items->Array.length - startIndex - numberToRender
@@ -31,12 +40,9 @@ let make = (~className="", ~itemHeight, ~items, ~children as render) => {
   <div className ref={ReactDOM.Ref.domRef(containerRef)}>
     <div style={ezstyle({"height": startIndex * itemHeight})} />
     {indicesToRender
-    ->Array.map(i => {
-      switch items->Belt.Array.get(i) {
-      | Some(item) => render(item)
-      | None => React.null
-      }
-    })
+    ->Array.map(i =>
+      items->Belt.Array.get(i)->Option.map(render)->Option.getWithDefault(React.null)
+    )
     ->React.array}
     <div style={ezstyle({"height": remaining * itemHeight})} />
   </div>

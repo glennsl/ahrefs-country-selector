@@ -13,6 +13,7 @@ module Document = {
 module Element = {
   @get external clientHeight: Dom.element => int = "clientHeight"
   @get external scrollTop: Dom.element => int = "scrollTop"
+  @get external scrollHeight: Dom.element => int = "scrollHeight"
 
   // NOTE: 'event is unsoundly typed
   @send
