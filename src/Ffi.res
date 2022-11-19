@@ -3,9 +3,24 @@ module Emotion = {
 }
 
 module Document = {
+  // NOTE: 'event is unsoundly typed
   @val external addEventListener: (string, 'event => unit) => unit = "document.addEventListener"
+  // NOTE: 'event is unsoundly typed
   @val
   external removeEventListener: (string, 'event => unit) => unit = "document.removeEventListener"
+}
+
+module Element = {
+  @get external clientHeight: Dom.element => int = "clientHeight"
+  @get external scrollTop: Dom.element => int = "scrollTop"
+
+  // NOTE: 'event is unsoundly typed
+  @send
+  external addEventListener: (Dom.element, string, 'event => unit) => unit = "addEventListener"
+  // NOTE: 'event is unsoundly typed
+  @send
+  external removeEventListener: (Dom.element, string, 'event => unit) => unit =
+    "removeEventListener"
 }
 
 module Promise = {
