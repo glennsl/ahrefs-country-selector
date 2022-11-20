@@ -130,10 +130,6 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
 
   let toggle = _ => setOpen(isOpen => !isOpen)
   let close = () => setOpen(_ => false)
-  let onChange = country => {
-    onChange(country)
-    close()
-  }
 
   React.useEffect1(() => {
     getCountries()->Promise.iter(result =>
@@ -161,6 +157,18 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
     }
   }, [isOpen])
 
+  let onChange = country => {
+    onChange(country)
+    close()
+  }
+
+  let onKeyDown = event => {
+    switch event->ReactEvent.Keyboard.key {
+    | "Escape" => close() // TODO: Also focus button?
+    | _ => ()
+    }
+  }
+
   <div className={`${css} ${className}`}>
     <button onClick=toggle>
       {selectedCountry
@@ -170,12 +178,13 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
     </button>
     {if isOpen {
       <div ref={ReactDOM.Ref.domRef(dropdownRef)} className="dropdown">
-        <div className="search">
+        <div onKeyDown className="search">
           {Icon.search}
           <input
             ref={ReactEx.Ref.onMount(Element.focus)}
             type_="text"
             placeholder="Search"
+            onKeyDown
             onInput={event => setFilter(_ => (event->ReactEvent.Form.target)["value"])}
             value=filter
           />
