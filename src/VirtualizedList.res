@@ -41,7 +41,7 @@ let make = (~className="", ~items, ~children as render) => {
     <div style={ReactEx.style({height: startIndex * itemHeight})} />
     {indicesToRender
     ->Array.map(i =>
-      items->Belt.Array.get(i)->Option.map(render)->Option.getWithDefault(React.null)
+      items->Belt.Array.get(i)->Option.map(render(_, i))->Option.getWithDefault(React.null)
     )
     ->React.array}
     <div style={ReactEx.style({height: remaining * itemHeight})} />

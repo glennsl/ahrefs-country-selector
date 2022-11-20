@@ -90,6 +90,10 @@ let css = Emotion.css(`
           overflow: hidden;
         }
 
+        &.focused {
+          background: #eee;
+        }
+
         &:hover {
           background: whitesmoke;
         }
@@ -117,6 +121,7 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
   let (countries, setCountries) = React.useState(() => [])
   let (isOpen, setOpen) = React.useState(() => false)
   let (filter, setFilter) = React.useState(() => "")
+  let (focus, setFocus) = React.useState(() => 0)
   let dropdownRef = React.useRef(null)
 
   let selectedCountry =
@@ -165,11 +170,14 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
   let onKeyDown = event => {
     switch event->ReactEvent.Keyboard.key {
     | "Escape" => close() // TODO: Also focus button?
+    | "ArrowUp" => setFocus(i => i - 1)
+    | "ArrowDown" => setFocus(i => i + 1)
+    | "Enter" => filteredCountries->Belt.Array.get(focus)->Option.forEach(onChange)
     | _ => ()
     }
   }
 
-  <div className={`${css} ${className}`}>
+  <div onKeyDown className={`${css} ${className}`}>
     <button onClick=toggle>
       {selectedCountry
       ->Option.mapWithDefault("Select country", country => country.label)
@@ -178,20 +186,22 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
     </button>
     {if isOpen {
       <div ref={ReactDOM.Ref.domRef(dropdownRef)} className="dropdown">
-        <div onKeyDown className="search">
+        <div className="search">
           {Icon.search}
           <input
             ref={ReactEx.Ref.onMount(Element.focus)}
             type_="text"
             placeholder="Search"
-            onKeyDown
             onInput={event => setFilter(_ => (event->ReactEvent.Form.target)["value"])}
             value=filter
           />
         </div>
         <VirtualizedList className="list" items=filteredCountries>
-          ...{country =>
-            <div className="list-item" key=country.value onClick={_ => onChange(country)}>
+          ...{(country, i) =>
+            <div
+              className={`list-item ${focus == i ? "focused" : ""}`}
+              key=country.value
+              onClick={_ => onChange(country)}>
               <FlagIcon lang=country.value />
               <span className="label"> {country.label->React.string} </span>
             </div>}
