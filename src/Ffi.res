@@ -17,6 +17,7 @@ module Element = {
 
   @send external contains: (Dom.element, Dom.element) => bool = "contains"
   @send external focus: Dom.element => unit = "focus"
+  @send external scrollTo: (Dom.element, int, int) => unit = "scrollTo"
 
   // NOTE: 'event is unsoundly typed
   @send

@@ -2,7 +2,7 @@ open Core
 open Ffi
 
 @react.component
-let make = (~className="", ~items, ~children as render) => {
+let make = (~className="", ~reveal as maybeIndexToReveal=?, ~items, ~children as render) => {
   let (maybeContainerHeight, setContainerHeight) = React.useState(() => None)
   let (scrollTop, setScrollTop) = React.useState(() => 0)
   let (itemHeight, setItemHeight) = React.useState(() => 10)
@@ -36,6 +36,23 @@ let make = (~className="", ~items, ~children as render) => {
   let startIndex = Js.Math.max_int(scrollTop / itemHeight - 1, 0)
   let indicesToRender = Belt.Array.init(numberToRender, i => i + startIndex)
   let remaining = items->Array.length - startIndex - numberToRender
+
+  // When the "reveal" index changes, scroll to reveal it
+  React.useEffect1(() => {
+    switch (maybeIndexToReveal, containerRef.current->Nullable.toOption, maybeContainerHeight) {
+    | (Some(indexToReveal), Some(container), Some(containerHeight)) =>
+      let startPos = indexToReveal * itemHeight
+      let endPos = startPos + itemHeight
+
+      if 0 <= startPos && startPos < scrollTop {
+        container->Element.scrollTo(0, startPos)
+      } else if scrollTop + containerHeight < endPos {
+        container->Element.scrollTo(0, endPos - containerHeight)
+      }
+    | _ => ()
+    }
+    None
+  }, [maybeIndexToReveal])
 
   <div className ref={ReactDOM.Ref.domRef(containerRef)}>
     <div style={ReactEx.style({height: startIndex * itemHeight})} />

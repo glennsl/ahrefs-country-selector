@@ -196,7 +196,7 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
             value=filter
           />
         </div>
-        <VirtualizedList className="list" items=filteredCountries>
+        <VirtualizedList className="list" items=filteredCountries reveal=focus>
           ...{(country, i) =>
             <div
               className={`list-item ${focus == i ? "focused" : ""}`}
