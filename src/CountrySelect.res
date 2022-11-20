@@ -168,11 +168,16 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
   }
 
   let onKeyDown = event => {
+    let itemsInPage = 6
     let n = filteredCountries->Array.length
     switch event->ReactEvent.Keyboard.key {
     | "Escape" => close() // TODO: Also focus button?
     | "ArrowUp" => setFocus(i => i <= 0 ? n - 1 : i - 1)
     | "ArrowDown" => setFocus(i => i >= n - 1 ? 0 : i + 1)
+    | "PageUp" => setFocus(i => Js.Math.max_int(0, i - itemsInPage))
+    | "PageDown" => setFocus(i => Js.Math.min_int(n - 1, i + itemsInPage))
+    | "Home" => setFocus(_ => 0)
+    | "End" => setFocus(_ => n - 1)
     | "Enter" => filteredCountries->Belt.Array.get(focus)->Option.forEach(onChange)
     | _ => ()
     }
