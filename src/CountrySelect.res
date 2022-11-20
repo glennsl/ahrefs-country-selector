@@ -143,13 +143,12 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
 
   React.useEffect1(() => {
     if isOpen {
-      let maybeClose = %raw(`function(close, event) {
-          if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-              close()
+      let onClick = event =>
+        dropdownRef.current->Nullable.iter((. el) =>
+          if !Element.contains(el, event["target"]) {
+            close()
           }
-        }`)
-
-      let onClick = event => maybeClose(close, event)
+        )
 
       setTimeout(() => Document.addEventListener("click", onClick), 0)->ignore
       Some(() => Document.removeEventListener("click", onClick))
