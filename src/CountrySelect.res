@@ -117,7 +117,7 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
   let (countries, setCountries) = React.useState(() => [])
   let (isOpen, setOpen) = React.useState(() => false)
   let (filter, setFilter) = React.useState(() => "")
-  let ref = React.useRef(null)
+  let dropdownRef = React.useRef(null)
 
   let selectedCountry =
     selectedValue->Option.flatMap(value => countries->Array.find(country => country.value == value))
@@ -144,7 +144,7 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
   React.useEffect1(() => {
     if isOpen {
       let maybeClose = %raw(`function(close, event) {
-          if (ref.current && !ref.current.contains(event.target)) {
+          if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
               close()
           }
         }`)
@@ -166,10 +166,11 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
       {Icon.arrow}
     </button>
     {if isOpen {
-      <div ref={ReactDOM.Ref.domRef(ref)} className="dropdown">
+      <div ref={ReactDOM.Ref.domRef(dropdownRef)} className="dropdown">
         <div className="search">
           {Icon.search}
           <input
+            ref={ReactEx.Ref.onMount(Element.focus)}
             type_="text"
             placeholder="Search"
             onInput={event => setFilter(_ => (event->ReactEvent.Form.target)["value"])}

@@ -15,6 +15,8 @@ module Element = {
   @get external scrollTop: Dom.element => int = "scrollTop"
   @get external scrollHeight: Dom.element => int = "scrollHeight"
 
+  @send external focus: Dom.element => unit = "focus"
+
   // NOTE: 'event is unsoundly typed
   @send
   external addEventListener: (Dom.element, string, 'event => unit) => unit = "addEventListener"
