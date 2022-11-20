@@ -183,7 +183,7 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
     }
   }
 
-  <div onKeyDown className={`${css} ${className}`}>
+  <div className={`${css} ${className}`}>
     <button onClick=toggle>
       {selectedCountry
       ->Option.mapWithDefault("Select country", country => country.label)
@@ -191,7 +191,7 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
       {Icon.arrow}
     </button>
     {if isOpen {
-      <div ref={ReactDOM.Ref.domRef(dropdownRef)} className="dropdown">
+      <div ref={ReactDOM.Ref.domRef(dropdownRef)} onKeyDown className="dropdown">
         <div className="search">
           {Icon.search}
           <input
