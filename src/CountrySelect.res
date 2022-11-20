@@ -130,6 +130,10 @@ let make = (~className="", ~country as selectedValue, ~onChange) => {
 
   let toggle = _ => setOpen(isOpen => !isOpen)
   let close = () => setOpen(_ => false)
+  let onChange = country => {
+    onChange(country)
+    close()
+  }
 
   React.useEffect1(() => {
     getCountries()->Promise.iter(result =>
