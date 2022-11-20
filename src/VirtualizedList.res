@@ -38,12 +38,12 @@ let make = (~className="", ~items, ~children as render) => {
   let remaining = items->Array.length - startIndex - numberToRender
 
   <div className ref={ReactDOM.Ref.domRef(containerRef)}>
-    <div style={ezstyle({"height": startIndex * itemHeight})} />
+    <div style={ReactEx.style({height: startIndex * itemHeight})} />
     {indicesToRender
     ->Array.map(i =>
       items->Belt.Array.get(i)->Option.map(render)->Option.getWithDefault(React.null)
     )
     ->React.array}
-    <div style={ezstyle({"height": remaining * itemHeight})} />
+    <div style={ReactEx.style({height: remaining * itemHeight})} />
   </div>
 }
